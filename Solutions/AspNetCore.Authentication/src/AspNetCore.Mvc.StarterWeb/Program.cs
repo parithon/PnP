@@ -17,14 +17,6 @@ namespace AspNetCore.Mvc.StarterWeb
         {
             IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args)
                 .UseAzureAppServices()
-                ////.UseKestrel(options =>
-                ////{
-                ////    options.Listen(IPAddress.Any, 5000, listenOptions =>
-                ////    {
-                ////        //listenOptions.UseHttps(@"..\..\certificates\localhost_ssl.pfx", "pass@word1");                    
-                ////        listenOptions.NoDelay = true;
-                ////    });
-                    
                 ////})
                 ////.UseUrls("https://localhost:5000")
                 .UseStartup<Startup>();
