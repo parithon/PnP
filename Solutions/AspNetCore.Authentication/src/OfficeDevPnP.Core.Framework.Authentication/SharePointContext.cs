@@ -272,7 +272,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         {
             _tokenHandler = new TokenHandler(configuration);
             _configuration = configuration;
-            if (!_tokenHandler.IsHighTrustApp())
+            if (!TokenHandler.IsHighTrustApp())
             {
                 _current = new SharePointAcsContextProvider();
             }

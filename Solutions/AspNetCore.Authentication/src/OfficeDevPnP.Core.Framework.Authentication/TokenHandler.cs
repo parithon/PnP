@@ -90,7 +90,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// If null, HostedAppHostName web.config setting is used instead. HostedAppHostNameOverride web.config setting, if present, will be used 
         /// for validation instead of <paramref name="appHostName"/> .</param>
         /// <returns>A JsonWebSecurityToken based on the context token.</returns>
-        public SharePointContextToken ReadAndValidateContextToken(string contextTokenString, string appHostName = null)
+        public static SharePointContextToken ReadAndValidateContextToken(string contextTokenString, string appHostName = null)
         {
             JsonWebSecurityTokenHandler tokenHandler = CreateJsonWebSecurityTokenHandler();
             SecurityToken securityToken = tokenHandler.ReadToken(contextTokenString);
@@ -148,7 +148,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// <param name="contextToken">Context token issued by the intended access token audience</param>
         /// <param name="targetHost">Url authority of the target principal</param>
         /// <returns>An access token with an audience matching the context token's source</returns>
-        public OAuth2AccessTokenResponse GetAccessToken(SharePointContextToken contextToken, string targetHost)
+        public static OAuth2AccessTokenResponse GetAccessToken(SharePointContextToken contextToken, string targetHost)
         {
             string targetPrincipalName = contextToken.TargetPrincipalName;
 
@@ -233,7 +233,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// <param name="targetHost">Url authority of the target principal</param>
         /// <param name="targetRealm">Realm to use for the access token's nameid and audience</param>
         /// <returns>An access token with an audience of the target principal</returns>
-        public OAuth2AccessTokenResponse GetAccessToken(
+        public static OAuth2AccessTokenResponse GetAccessToken(
             string refreshToken,
             string targetPrincipalName,
             string targetHost,
@@ -321,7 +321,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// </summary>
         /// <param name="properties">Properties of a remote event receiver</param>
         /// <returns>A ClientContext ready to call the web where the event originated</returns>
-        public ClientContext CreateRemoteEventReceiverClientContext(SPRemoteEventProperties properties)
+        public static ClientContext CreateRemoteEventReceiverClientContext(SPRemoteEventProperties properties)
         {
             Uri sharepointUrl;
             if (properties.ListEventProperties != null)
@@ -526,7 +526,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// <param name="targetApplicationUri">Url of the target SharePoint site</param>
         /// <param name="identity">Windows identity of the user on whose behalf to create the access token</param>
         /// <returns>A ClientContext using an access token with an audience of the target application</returns>
-        public ClientContext GetS2SClientContextWithWindowsIdentity(
+        public static ClientContext GetS2SClientContextWithWindowsIdentity(
             Uri targetApplicationUri,
             WindowsIdentity identity)
         {
@@ -596,7 +596,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         /// Determines if this is a high trust app.
         /// </summary>
         /// <returns>True if this is a high trust app.</returns>
-        public bool IsHighTrustApp()
+        public static bool IsHighTrustApp()
         {
             return _signingCredentials != null;
         }
@@ -639,22 +639,22 @@ namespace OfficeDevPnP.Core.Framework.Authentication
         // Environment Constants
         //
 
-        private string _globalEndPointPrefix = "accounts";
-        private string _acsHostUrl = "accesscontrol.windows.net";
+        private static string _globalEndPointPrefix = "accounts";
+        private static string _acsHostUrl = "accesscontrol.windows.net";
 
         //
         // Injected app IConfiguration
         //
 
-        private readonly string _clientId;
-        private readonly string _issuerId;
-        private readonly string _hostedAppHostNameOverride;
-        private readonly string _hostedAppHostName;
-        private readonly string _clientSecret;
-        private readonly string _secondaryClientSecret;
-        private readonly string _realm;
-        private readonly string _serviceNamespace;
-        private readonly X509SigningCredentials _signingCredentials;
+        private static string _clientId;
+        private static string _issuerId;
+        private static string _hostedAppHostNameOverride;
+        private static string _hostedAppHostName;
+        private static string _clientSecret;
+        private static string _secondaryClientSecret;
+        private static string _realm;
+        private static string _serviceNamespace;
+        private static X509SigningCredentials _signingCredentials;
 
         #endregion
 
@@ -685,7 +685,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
 
         #region private methods
 
-        private ClientContext CreateAcsClientContextForUrl(SPRemoteEventProperties properties, Uri sharepointUrl)
+        private static ClientContext CreateAcsClientContextForUrl(SPRemoteEventProperties properties, Uri sharepointUrl)
         {
             string contextTokenString = properties.ContextToken;
 
@@ -700,17 +700,17 @@ namespace OfficeDevPnP.Core.Framework.Authentication
             return GetClientContextWithAccessToken(sharepointUrl.ToString(), accessToken);
         }
 
-        private string GetAcsMetadataEndpointUrl()
+        private static string GetAcsMetadataEndpointUrl()
         {
             return Path.Combine(GetAcsGlobalEndpointUrl(), AcsMetadataEndPointRelativeUrl);
         }
 
-        private string GetAcsMetadataEndpointUrlWithRealm(string realm)
+        private static string GetAcsMetadataEndpointUrlWithRealm(string realm)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}?realm={1}", GetAcsMetadataEndpointUrl(), realm);
         }
 
-        private string GetFormattedPrincipal(string principalName, string hostName, string realm)
+        private static string GetFormattedPrincipal(string principalName, string hostName, string realm)
         {
             if (!String.IsNullOrEmpty(hostName))
             {
@@ -720,17 +720,17 @@ namespace OfficeDevPnP.Core.Framework.Authentication
             return String.Format(CultureInfo.InvariantCulture, "{0}@{1}", principalName, realm);
         }
 
-        private string GetAcsPrincipalName(string realm)
+        private static string GetAcsPrincipalName(string realm)
         {
             return GetFormattedPrincipal(AcsPrincipalName, new Uri(GetAcsGlobalEndpointUrl()).Host, realm);
         }
 
-        private string GetAcsGlobalEndpointUrl()
+        private static string GetAcsGlobalEndpointUrl()
         {
             return String.Format(CultureInfo.InvariantCulture, "https://{0}.{1}/", _globalEndPointPrefix, _acsHostUrl);
         }
 
-        private JsonWebSecurityTokenHandler CreateJsonWebSecurityTokenHandler()
+        private static JsonWebSecurityTokenHandler CreateJsonWebSecurityTokenHandler()
         {
             JsonWebSecurityTokenHandler handler = new JsonWebSecurityTokenHandler();
             handler.Configuration = new SecurityTokenHandlerConfiguration();
@@ -760,7 +760,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
             return handler;
         }
 
-        private string GetS2SAccessTokenWithClaims(
+        private static string GetS2SAccessTokenWithClaims(
             string targetApplicationHostName,
             string targetRealm,
             IEnumerable<JsonWebTokenClaim> claims)
@@ -777,7 +777,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
                 claims == null);
         }
 
-        private JsonWebTokenClaim[] GetClaimsWithWindowsIdentity(WindowsIdentity identity)
+        private static JsonWebTokenClaim[] GetClaimsWithWindowsIdentity(WindowsIdentity identity)
         {
             JsonWebTokenClaim[] claims = new JsonWebTokenClaim[]
             {
@@ -787,7 +787,7 @@ namespace OfficeDevPnP.Core.Framework.Authentication
             return claims;
         }
 
-        private string IssueToken(
+        private static string IssueToken(
             string sourceApplication,
             string issuerApplication,
             string sourceRealm,
